@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.20.0" />
+    <PackageReference Include="Tmds.DBus.SourceGenerator" Version="0.0.19">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Account.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Background.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Camera.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Clipboard.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Documents.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.DynamicLauncher.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Email.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.FileChooser.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.FileTransfer.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.GameMode.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.GlobalShortcuts.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Inhibit.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.InputCapture.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Location.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.MemoryMonitor.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.NetworkMonitor.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Notification.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.OpenURI.xml" DBusGeneratorMode="Proxy" />
+    <!-- <AdditionalFiles Include="xml/org.freedesktop.portal.PowerProfileMonitor.xml" DBusGeneratorMode="Proxy" /> -->
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Print.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.ProxyResolver.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Realtime.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.RemoteDesktop.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Request.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.ScreenCast.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Screenshot.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Secret.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Session.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Settings.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Trash.xml" DBusGeneratorMode="Proxy" />
+    <AdditionalFiles Include="xml/org.freedesktop.portal.Wallpaper.xml" DBusGeneratorMode="Proxy" />
+  </ItemGroup>
+
+</Project>
