@@ -3,10 +3,12 @@ using Microsoft.Win32.SafeHandles;
 
 namespace XdgDesktopPortal;
 
-internal static partial class UnixNativeStuff {
+internal static partial class UnixNativeStuff
+{
     private const int O_DIRECTORY = 65536;
 
-    public static UnixPipe CreatePipe() {
+    public static UnixPipe CreatePipe()
+    {
         int[] files = new int[2];
         if (pipe2(files, 0) != 0) throw new InvalidOperationException("pipe2 exploded :uhoh:");
 

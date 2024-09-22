@@ -8,7 +8,8 @@ public class XdpOpenURI(Connection dbusConnection)
 {
     private readonly OrgFreedesktopPortalOpenURI Wrapped = new(dbusConnection, XdpUtils.Destination, XdpUtils.DesktopObject);
 
-    public async Task OpenURI(WindowId parentWindow, Uri uri, bool? writable = null, bool? ask = null, CancellationToken cancellationToken = default) {
+    public async Task OpenURI(WindowId parentWindow, Uri uri, bool? writable = null, bool? ask = null, CancellationToken cancellationToken = default)
+    {
         await using XdpRequest req = await XdpRequest.Create(dbusConnection);
 
         Dictionary<string, Variant> options = new()
@@ -24,7 +25,8 @@ public class XdpOpenURI(Connection dbusConnection)
         await req.Await(cancellationToken);
     }
 
-    public async Task OpenFile(WindowId parentWindow, SafeFileHandle file, bool? writable = null, bool? ask = null, CancellationToken cancellationToken = default) {
+    public async Task OpenFile(WindowId parentWindow, SafeFileHandle file, bool? writable = null, bool? ask = null, CancellationToken cancellationToken = default)
+    {
         await using XdpRequest req = await XdpRequest.Create(dbusConnection);
 
         Dictionary<string, Variant> options = new()
@@ -60,7 +62,8 @@ public class XdpOpenURI(Connection dbusConnection)
         await req.Await(cancellationToken);
     }
 
-    public async Task OpenDirectory(WindowId parentWindow, DirectoryInfo directory, CancellationToken cancellationToken = default) {
+    public async Task OpenDirectory(WindowId parentWindow, DirectoryInfo directory, CancellationToken cancellationToken = default)
+    {
         using SafeFileHandle dirFd = UnixNativeStuff.OpenDir(directory.FullName);
 
         await OpenDirectory(parentWindow, dirFd, cancellationToken);

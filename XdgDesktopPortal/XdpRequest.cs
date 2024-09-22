@@ -13,7 +13,8 @@ internal class XdpRequest : IAsyncDisposable
     private readonly TaskCompletionSource<Dictionary<string, VariantValue>> future = new();
     private IDisposable? finishListener;
 
-    private XdpRequest(Connection connection, string handleToken) {
+    private XdpRequest(Connection connection, string handleToken)
+    {
         string sender = connection.UniqueName!.TrimStart(':').Replace('.', '_');
 
         this.HandleToken = handleToken;
@@ -22,7 +23,8 @@ internal class XdpRequest : IAsyncDisposable
         this.proxy = new OrgFreedesktopPortalRequest(connection, XdpUtils.Destination, RequestPath);
     }
 
-    public static async Task<XdpRequest> Create(Connection connection) {
+    public static async Task<XdpRequest> Create(Connection connection)
+    {
         static string GenerateHandleToken()
         {
             Span<char> token = stackalloc char[16];
@@ -40,7 +42,8 @@ internal class XdpRequest : IAsyncDisposable
         this.finishListener = await proxy.WatchResponseAsync(this.HandleResponse, true, ObserverFlags.EmitOnDispose);
     }
 
-    private void HandleResponse(Exception? error, (uint Response, Dictionary<string, VariantValue> Results) result) {
+    private void HandleResponse(Exception? error, (uint Response, Dictionary<string, VariantValue> Results) result)
+    {
         if (future.Task.IsCompleted) return;
 
         this.finishListener = null;
@@ -65,7 +68,8 @@ internal class XdpRequest : IAsyncDisposable
         }
     }
 
-    public void ValidatePath(ObjectPath actual) {
+    public void ValidatePath(ObjectPath actual)
+    {
         if (RequestPath != actual)
             throw new InvalidOperationException($"Expected request path {RequestPath}, got {actual}");
     }
