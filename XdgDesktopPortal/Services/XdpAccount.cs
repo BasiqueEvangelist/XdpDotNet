@@ -3,10 +3,12 @@ using Tmds.DBus.SourceGenerator;
 
 namespace XdgDesktopPortal.Services;
 
-public class XdgAccount(Connection dbusConnection) {
+public class XdpAccount(Connection dbusConnection)
+{
     private readonly OrgFreedesktopPortalAccount Wrapped = new(dbusConnection, XdpUtils.Destination, XdpUtils.DesktopObject);
-   
-    public async Task<XdgAccountInformation> GetUserInformation(WindowId window, string? reason = null, CancellationToken cancellationToken = default) {
+
+    public async Task<XdgAccountInformation> GetUserInformation(WindowId window, string? reason = null, CancellationToken cancellationToken = default)
+    {
         await using XdpRequest req = await XdpRequest.Create(dbusConnection);
 
         Dictionary<string, Variant> options = new()
@@ -24,7 +26,8 @@ public class XdgAccount(Connection dbusConnection) {
     }
 }
 
-public record XdgAccountInformation(string Id, string Name, Uri Image) {
+public record XdgAccountInformation(string Id, string Name, Uri Image)
+{
     internal static XdgAccountInformation FromResponse(Dictionary<string, VariantValue> response)
      => new XdgAccountInformation(
         response["id"].GetString(),

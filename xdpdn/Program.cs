@@ -78,7 +78,8 @@ var root = new RootCommand("Utility for testing Xdp.Net");
 {
     Command trashFile = new Command("trash-file", "Moves a file to the trash");
 
-    var fileArg = new Argument<List<FileInfo>>("files", "Files to send to trash") {
+    var fileArg = new Argument<List<FileInfo>>("files", "Files to send to trash")
+    {
         Arity = ArgumentArity.OneOrMore,
     };
 
@@ -88,7 +89,8 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     {
         var trash = new XdpTrash(conn);
 
-        foreach (var file in files) {
+        foreach (var file in files)
+        {
             using var stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.Delete);
 
             await trash.TrashFile(stream.SafeFileHandle);
@@ -156,7 +158,8 @@ var root = new RootCommand("Utility for testing Xdp.Net");
 {
     Command getUserInfo = new Command("get-user-info", "Requests information about the user");
 
-    var reasonOpt = new Option<string?>(["-r", "--reason"], "Specifies the reason provided to the user") {
+    var reasonOpt = new Option<string?>(["-r", "--reason"], "Specifies the reason provided to the user")
+    {
         Arity = ArgumentArity.ZeroOrOne,
         IsRequired = false
     };
@@ -165,7 +168,7 @@ var root = new RootCommand("Utility for testing Xdp.Net");
 
     getUserInfo.SetHandler(async (reason) =>
     {
-        var account = new XdgAccount(conn);
+        var account = new XdpAccount(conn);
         var info = await account.GetUserInformation(default, reason);
 
         Console.WriteLine($"ID: {info.Id}");
@@ -174,6 +177,97 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     }, reasonOpt);
 
     root.AddCommand(getUserInfo);
+}
+
+{
+    Command screenshot = new Command("screenshot", "Takes a screenshot");
+
+    var modalOpt = new Option<bool>(["-m", "--modal"], "Makes the user dialog modal");
+    var interactiveOpt = new Option<bool>(["-i", "--interactive"], "Makes the user dialog interactive");
+
+    screenshot.AddOption(modalOpt);
+    screenshot.AddOption(interactiveOpt);
+
+    screenshot.SetHandler(async (modal, interactive) =>
+    {
+        var screenshot = new XdpScreenshot(conn);
+        var screenshotUri = await screenshot.Screenshot(default, modal, interactive);
+
+        Console.WriteLine(screenshotUri);
+    }, modalOpt, interactiveOpt);
+
+    root.AddCommand(screenshot);
+}
+
+{
+    Command pickColor = new Command("pick-color", "Picks a single pixel's color");
+
+    pickColor.SetHandler(async () =>
+    {
+        var screenshot = new XdpScreenshot(conn);
+        var color = await screenshot.PickColor(default);
+
+        Console.WriteLine(color);
+    });
+
+    root.AddCommand(pickColor);
+}
+
+{
+    Command openFileDialog = new Command("open-file-dialog", "Opens an open file dialog");
+
+    var titleArg = new Argument<string>("title", "The title the dialog will have");
+    var acceptLabelOpt = new Option<string?>(["--accept-label"], "Label for the accept button");
+    var modalOpt = new Option<bool>(["--modal"], "Whether the dialog should be modal");
+    var multipleOpt = new Option<bool>(["--multiple"], "Whether multiple files can be selected or not");
+    var directoryOpt = new Option<bool>(["--directory"], "Whether to select for folders instead of files");
+
+    var checkboxesOpt = new Option<List<string>>(["--checkbox"], "Adds a checkbox");
+
+    openFileDialog.AddArgument(titleArg);
+    openFileDialog.AddOption(acceptLabelOpt);
+    openFileDialog.AddOption(modalOpt);
+    openFileDialog.AddOption(multipleOpt);
+    openFileDialog.AddOption(directoryOpt);
+    openFileDialog.AddOption(checkboxesOpt);
+
+    openFileDialog.SetHandler(async (title, acceptLabel, modal, multiple, directory, checkboxes) =>
+    {
+        var fileChooser = new XdpFileChooser(conn);
+
+        var req = fileChooser.OpenFile(default, title);
+
+        if (acceptLabel != null) req.AcceptLabel(acceptLabel);
+
+        req.Modal(modal)
+            .Multiple(multiple)
+            .Directory(directory);
+
+        foreach (var checkbox in checkboxes)
+        {
+            req.Choice(checkbox, checkbox);
+        }
+
+        // TODO: figure out why filters are broken.
+        // req.Filter(new XdpFileChooser.FileFilter()
+        // {
+        //     Name = "Pictures",
+        //     GlobFilters = ["*.jpg"],
+        //     MimeTypeFilters = ["image/png"]
+        // });
+
+        var res = await req.Send();
+
+        foreach (var uri in res.Uris) Console.WriteLine(uri);
+
+        if (res.Choices != null)
+            foreach (var choice in res.Choices) Console.WriteLine($"{choice.Key} -> {choice.Value}");
+
+        if (res.CurrentFilter != null) Console.WriteLine($"filter: {res.CurrentFilter}");
+
+    }, titleArg, acceptLabelOpt, modalOpt, multipleOpt, directoryOpt, checkboxesOpt);
+
+    root.AddCommand(openFileDialog);
 }
 
 return await root.InvokeAsync(args);
