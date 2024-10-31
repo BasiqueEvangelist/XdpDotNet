@@ -1,7 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-using Tmds.DBus.Protocol;
-using Tmds.DBus.SourceGenerator;
-
 namespace XdgDesktopPortal;
 
 internal class XdpUtils

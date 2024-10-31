@@ -270,4 +270,58 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     root.AddCommand(openFileDialog);
 }
 
+{
+    Command addNotification = new Command("add-notification", "Sends a notification");
+
+    var idArg = new Argument<string>("id", "Application-provided ID for this notification");
+    addNotification.AddArgument(idArg);
+
+    var titleOpt = new Option<string?>("--title", "User-visible string to display as the title");
+    addNotification.AddOption(titleOpt);
+
+    var bodyOpt = new Option<string?>("--body", "User-visible string to display as the body");
+    addNotification.AddOption(bodyOpt);
+
+    var iconOpt = new Option<FileInfo?>("--icon", "Image to use as the user-visible icon");
+    addNotification.AddOption(iconOpt);
+
+    var priorityOpt = new Option<XdpNotification.NotificationPriority?>("--priority", "The notification's priority");
+    addNotification.AddOption(priorityOpt);
+
+    addNotification.SetHandler(async (id, title, body, icon, priority) =>
+    {
+        var notificationSvc = new XdpNotification(conn);
+
+        var notification = new XdpNotification.Notification()
+        {
+            Title = title,
+            Body = body,
+
+            Priority = priority
+        };
+
+        if (icon != null) notification.Icon = await File.ReadAllBytesAsync(icon.FullName);
+
+        await notificationSvc.AddNotification(id, notification);
+    }, idArg, titleOpt, bodyOpt, iconOpt, priorityOpt);
+
+    root.AddCommand(addNotification);
+}
+
+{
+    Command removeNotification = new Command("remove-notification", "Removes a notification");
+
+    var idArg = new Argument<string>("id", "Application-provided ID for this notification");
+    removeNotification.AddArgument(idArg);
+
+    removeNotification.SetHandler(async (id) =>
+    {
+        var notificationSvc = new XdpNotification(conn);
+
+        await notificationSvc.RemoveNotification(id);
+    }, idArg);
+
+    root.AddCommand(removeNotification);
+}
+
 return await root.InvokeAsync(args);
