@@ -347,4 +347,53 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     root.AddCommand(readAllSettings);
 }
 
+{
+    Command transferFiles = new Command("transfer-files", "Transfers files via the FileTransfer portal");
+
+    var filesArg = new Argument<FileInfo[]>("files")
+    {
+        Arity = ArgumentArity.OneOrMore
+    };
+    transferFiles.AddArgument(filesArg);
+
+    var writableOpt = new Option<bool>("--writable");
+    transferFiles.AddOption(writableOpt);
+    
+    var noAutoStopOpt = new Option<bool>("--no-autostop");
+    transferFiles.AddOption(noAutoStopOpt);
+    
+    transferFiles.SetHandler(async (files, writable, noAutoStop) =>
+    {
+        var fileTransfer = new XdpFileTransfer(conn);
+
+        await using var session = await fileTransfer.StartTransfer(writable: writable, autoStop: !noAutoStop);
+        await session.AddFiles(files);
+        
+        Console.WriteLine(session.Key);
+
+        await session.AwaitClosure();
+    }, filesArg, writableOpt, noAutoStopOpt);
+
+    root.AddCommand(transferFiles);
+}
+
+{
+    Command receiveFiles = new Command("receive-files", "Receives files via the FileTransfer portal");
+
+    var keyArg = new Argument<string>("key");
+    receiveFiles.AddArgument(keyArg);
+    
+    receiveFiles.SetHandler(async key =>
+    {
+        var fileTransfer = new XdpFileTransfer(conn);
+
+        foreach (var path in await fileTransfer.RetrieveFiles(key))
+        {
+            Console.WriteLine(path);
+        }
+    }, keyArg);
+
+    root.AddCommand(receiveFiles);
+}
+
 return await root.InvokeAsync(args);
