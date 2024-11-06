@@ -324,4 +324,27 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     root.AddCommand(removeNotification);
 }
 
+{
+    Command readAllSettings = new Command("read-all-settings", "Reads all settings");
+
+    readAllSettings.SetHandler(new Func<Task>(async () =>
+    {
+        var settings = new XdpSettings(conn);
+
+        var data = await settings.GetAll();
+
+        foreach (var nsEntry in data)
+        {
+            Console.WriteLine(nsEntry.Key);
+
+            foreach (var entry in nsEntry.Value)
+            {
+                Console.WriteLine("    {0}={1}", entry.Key, entry.Value);
+            }
+        }
+    }));
+
+    root.AddCommand(readAllSettings);
+}
+
 return await root.InvokeAsync(args);
