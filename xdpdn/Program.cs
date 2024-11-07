@@ -396,4 +396,49 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     root.AddCommand(receiveFiles);
 }
 
+{
+    Command bindGlobalShortcuts = new Command("bind-global-shortcuts");
+
+    var shortcutsArg = new Argument<string[]>("shortcuts");
+    bindGlobalShortcuts.AddArgument(shortcutsArg);
+    
+    bindGlobalShortcuts.SetHandler(async ctx =>
+    {
+        var shortcuts = ctx.ParseResult.GetValueForArgument(shortcutsArg);
+        
+        var globalShortcuts = new XdpGlobalShortcuts(conn);
+        await using var session = await globalShortcuts.CreateSession(ctx.GetCancellationToken());
+
+        var bound = await session.BindShortcuts(
+            default,
+            ctx.GetCancellationToken(),
+            shortcuts.Select(x => new XdpGlobalShortcuts.BindableShortcut
+            {
+                Id = x,
+                Description = x
+            })
+            .ToArray()
+        );
+
+        foreach (var shortcut in bound)
+        {
+            Console.WriteLine($"{shortcut.Id} -> {shortcut.TriggerDescription}");
+
+            shortcut.Activated += _ =>
+            {
+                Console.WriteLine($"{shortcut.Id} Activated");
+            };
+            
+            shortcut.Deactivated += _ =>
+            {
+                Console.WriteLine($"{shortcut.Id} Deactivated");
+            };
+        }
+
+        await Task.Delay(-1, ctx.GetCancellationToken());
+    });
+
+    root.AddCommand(bindGlobalShortcuts);
+}
+
 return await root.InvokeAsync(args);

@@ -25,14 +25,7 @@ internal class XdpRequest : IAsyncDisposable
 
     public static async Task<XdpRequest> Create(Connection connection)
     {
-        static string GenerateHandleToken()
-        {
-            Span<char> token = stackalloc char[16];
-            Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz0123456789", token);
-            return $"xdp_dot_net_{token}";
-        }
-
-        var req = new XdpRequest(connection, GenerateHandleToken());
+        var req = new XdpRequest(connection, XdpUtils.GenerateHandleToken());
         await req.Setup();
         return req;
     }
@@ -75,10 +68,7 @@ internal class XdpRequest : IAsyncDisposable
     }
 
     public async Task<Dictionary<string, VariantValue>> Await(CancellationToken token)
-    {
-        using var reg = token.Register(() => future.TrySetCanceled(token));
-        return await future.Task;
-    }
+        => await future.Task.WaitAsync(token);
 
     public async ValueTask DisposeAsync()
     {

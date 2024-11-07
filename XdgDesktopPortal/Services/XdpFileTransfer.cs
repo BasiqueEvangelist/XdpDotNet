@@ -4,45 +4,20 @@ using Tmds.DBus.SourceGenerator;
 
 namespace XdgDesktopPortal.Services;
 
-public class XdpFileTransfer(Connection dbusConnection)
+public class XdpFileTransfer
 {
-    private readonly OrgFreedesktopPortalFileTransfer _wrapped = new(dbusConnection, XdpUtils.DocumentsDestination, XdpUtils.DocumentsObject);
+    private readonly OrgFreedesktopPortalFileTransfer _wrapped;
 
-    private readonly List<Action<string>> transferClosedListeners = new();
-    private IDisposable? transferClosedHandle;
-    private event Action<string> TransferClosed
+    private readonly SignalListener<string> _transferClosed;
+
+    public XdpFileTransfer(Connection dbusConnection)
     {
-        add
-        {
-            if (transferClosedListeners.Count == 0)
-            {
-                Task.Run(async () =>
-                {
-                    transferClosedHandle = await _wrapped.WatchTransferClosedAsync((exception, key) =>
-                    {
-                        foreach (var listener in transferClosedListeners)
-                        {
-                            listener(key);
-                        }
-                    });
-                });
-            }
-            
-            transferClosedListeners.Add(value);
-        }
+        _wrapped = new OrgFreedesktopPortalFileTransfer(dbusConnection, XdpUtils.DocumentsDestination, XdpUtils.DocumentsObject);
 
-        remove
-        {
-            transferClosedListeners.Remove(value);
+        _transferClosed = new SignalListener<string>(invoker =>
+            _wrapped.WatchTransferClosedAsync((_, key) => invoker(key)));
+    }
 
-            if (transferClosedListeners.Count == 0)
-            {
-                transferClosedHandle?.Dispose();
-                transferClosedHandle = null;
-            }
-        }
-    } 
-    
     public async Task<TransferSession> StartTransfer(bool? writable = null, bool? autoStop = null)
     {
         Dictionary<string, Variant> options = new();
@@ -75,7 +50,7 @@ public class XdpFileTransfer(Connection dbusConnection)
             Key = key;
             
             transferClosedHandler = OnClosed;
-            parent.TransferClosed += transferClosedHandler;
+            parent._transferClosed.Fired += transferClosedHandler;
         }
 
         public async Task AddFiles(params SafeFileHandle[] fds)
@@ -109,7 +84,7 @@ public class XdpFileTransfer(Connection dbusConnection)
             
             IsClosed = true;
             closedTask.SetResult();
-            _parent.TransferClosed -= transferClosedHandler;
+            _parent._transferClosed.Fired -= transferClosedHandler;
         }
 
         public async ValueTask DisposeAsync()
