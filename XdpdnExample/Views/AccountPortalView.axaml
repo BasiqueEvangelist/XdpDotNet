@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:XdpdnExample.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="XdpdnExample.Views.AccountPortalView"
+             x:DataType="vm:AccountPortalViewModel">
+    <Design.DataContext>
+        <vm:AccountPortalViewModel />
+    </Design.DataContext>
+    
+    <StackPanel Margin="10">
+        <Label Target="ReasonField">Reason: </Label>
+        <TextBox Name="ReasonField" Watermark="because it's funny" Text="{Binding Reason}"></TextBox>
+        
+        <Button Command="{Binding AskForUserInformationCommand}">Get User Information</Button>
+        
+        <Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto, auto" Margin="0 5" IsVisible="{Binding InfoAvailable}">
+            <TextBlock Grid.Column="0" Grid.Row="0">ID: </TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Info.Id}" />
+            
+            <TextBlock Grid.Column="0" Grid.Row="1">Name: </TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Info.Name}" />
+            
+            <TextBlock Grid.Column="0" Grid.Row="2">Image: </TextBlock>
+            <Image Grid.Column="1" Grid.Row="2" Source="{Binding AccountImage}" />
+        </Grid>
+    </StackPanel>
+</UserControl>

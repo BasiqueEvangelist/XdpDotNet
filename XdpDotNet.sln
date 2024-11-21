@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -6,6 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XdgDesktopPortal", "XdgDesktopPortal\XdgDesktopPortal.csproj", "{A261227E-04DD-49AA-8B6A-DECE72EEC007}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xdpdn", "xdpdn\xdpdn.csproj", "{E73C7EE3-038B-4CF2-B8BD-B49159E70156}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XdpdnExample", "XdpdnExample\XdpdnExample.csproj", "{968D4D39-CE3A-460D-BC47-655373868CA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +26,9 @@ Global
 		{E73C7EE3-038B-4CF2-B8BD-B49159E70156}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E73C7EE3-038B-4CF2-B8BD-B49159E70156}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E73C7EE3-038B-4CF2-B8BD-B49159E70156}.Release|Any CPU.Build.0 = Release|Any CPU
+		{968D4D39-CE3A-460D-BC47-655373868CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{968D4D39-CE3A-460D-BC47-655373868CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{968D4D39-CE3A-460D-BC47-655373868CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{968D4D39-CE3A-460D-BC47-655373868CA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

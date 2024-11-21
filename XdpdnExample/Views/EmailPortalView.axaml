@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:XdpdnExample.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="XdpdnExample.Views.EmailPortalView"
+             x:DataType="vm:EmailPortalViewModel"
+             
+             xmlns:s="using:System">
+    <Design.DataContext>
+        <vm:EmailPortalViewModel />
+    </Design.DataContext>
+    
+    <StackPanel Margin="10">
+        <ItemsControl ItemsSource="{Binding AddressLists}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="vm:AddressListViewModel">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name, StringFormat='{}: '}" VerticalAlignment="Center" Margin="0 0 5 0"/>
+                            <Button Command="{Binding AddCommand}">+</Button>
+                        </StackPanel>
+            
+                        <ItemsControl ItemsSource="{Binding Addresses}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="vm:EmailAddressViewModel">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBox Watermark="jsmith@example.com" Text="{Binding Value}" Margin="0 0 5 0" />
+                            
+                                        <Button Command="{Binding RemoveCommand}">❌</Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <StackPanel Orientation="Horizontal">
+            <Label Target="SubjectBox">Subject: </Label>
+            <TextBox Name="SubjectBox" Text="{Binding Subject}" />
+        </StackPanel>
+            
+        <Label Target="BodyBox">Body: </Label>
+        <TextBox Name="BodyBox" Text="{Binding Body}" AcceptsReturn="True"/>
+            
+        <Button Command="{Binding ComposeEmailCommand}">Compose Email</Button>
+    </StackPanel>
+</UserControl>
