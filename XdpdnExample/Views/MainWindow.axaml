@@ -12,6 +12,7 @@
     <TabControl>
         <TabItem Header="Account"><views:AccountPortalView /></TabItem>
         <TabItem Header="Email"><views:EmailPortalView /></TabItem>
+        <TabItem Header="Secret"><views:SecretPortalView /></TabItem>
         <TabItem Header="Trash"><views:TrashPortalView /></TabItem>
     </TabControl>
 
