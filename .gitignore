@@ -3,3 +3,6 @@
 .vscode
 .idea
 *.DotSettings.user
+.flatpak-builder
+build-dir
+nuget-sources*.json

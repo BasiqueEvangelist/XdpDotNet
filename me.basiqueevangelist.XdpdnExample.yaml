@@ -1,0 +1,38 @@
+id: me.basiqueevangelist.XdpdnExample
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.dotnet9
+build-options:
+  prepend-path: "/usr/lib/sdk/dotnet9/bin"
+  append-ld-library-path: "/usr/lib/sdk/dotnet9/lib"
+  prepend-pkg-config-path: "/usr/lib/sdk/dotnet9/lib/pkgconfig"
+
+command: XdpdnExample
+
+finish-args:
+  - --device=dri
+  - --socket=x11
+  - --share=ipc
+  - --env=DOTNET_ROOT=/app/lib/dotnet
+
+modules:
+  - name: dotnet
+    buildsystem: simple
+    build-commands:
+    - /usr/lib/sdk/dotnet9/bin/install.sh
+
+  - name: XdpDotNet
+    buildsystem: simple
+    builddir: true
+    sources:
+      - type: dir
+        path: .
+      - ./nuget-sources.json
+    build-commands:
+      - ls
+      - pwd
+      - dotnet publish XdpdnExample/XdpdnExample.csproj -c Release --no-self-contained --source ./nuget-sources
+      - mkdir -p ${FLATPAK_DEST}/bin
+      - cp -r XdpdnExample/bin/Release/net9.0/publish/* ${FLATPAK_DEST}/bin
