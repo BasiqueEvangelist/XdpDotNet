@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using Microsoft.Win32.SafeHandles;
 using Tmds.DBus.Protocol;
 using XdgDesktopPortal;
@@ -439,6 +440,27 @@ var root = new RootCommand("Utility for testing Xdp.Net");
     });
 
     root.AddCommand(bindGlobalShortcuts);
+}
+
+{
+    Command trackLocation = new Command("track-location");
+
+    trackLocation.SetHandler(new Func<InvocationContext, Task>(async ctx =>
+    {
+        var location = new XdpLocation(conn);
+        await using var session = await location.CreateSession();
+
+        session.LocationUpdated += loc =>
+        {
+            Console.WriteLine(loc.ToString());
+        };
+        
+        await session.Start(default, ctx.GetCancellationToken());
+
+        await Task.Delay(-1, ctx.GetCancellationToken());
+    }));
+
+    root.AddCommand(trackLocation);
 }
 
 return await root.InvokeAsync(args);
